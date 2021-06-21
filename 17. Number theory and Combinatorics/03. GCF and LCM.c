@@ -25,7 +25,7 @@ int GCF(int a, int b) // 최대공약수를 구하는 함수
     return b;
 }
 
-int common_multiple(int a, int b) // 최소 공배수를 구하는 함수
+int LCM(int a, int b) // 최소 공배수를 구하는 함수
 {
     if (a == b)
         return a;
@@ -52,7 +52,7 @@ int main()
     }
 
     printf("%d\n", GCF(num1, num2));
-    printf("%d", common_multiple(num1, num2));
+    printf("%d", LCM(num1, num2));
 
     return 0;
 }
