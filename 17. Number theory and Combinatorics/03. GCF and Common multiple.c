@@ -14,19 +14,15 @@ int GCF(int a, int b) // 최대공약수를 구하는 함수
     if (a == b)
         return a;
 
-    int a_tmp, b_tmp;
-    a_tmp = a;
-    b_tmp = b;
-
-    while (a_tmp > 0) // 유클리드 호제법 이용
+    while (a > 0) // 유클리드 호제법 이용
     {
         int remain;
-        remain = b_tmp % a_tmp;
-        b_tmp = a_tmp;
-        a_tmp = remain;
+        remain = b % a;
+        b = a;
+        a = remain;
     }
 
-    return b_tmp;
+    return b;
 }
 
 int common_multiple(int a, int b) // 최소 공배수를 구하는 함수
