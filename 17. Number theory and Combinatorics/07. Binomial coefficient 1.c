@@ -1,5 +1,5 @@
 /**
- * @file 07. Binomial coefficient.c
+ * @file 07. Binomial coefficient 1.c
  * @author Kdelphinus (delphinus@khu.ac.kr)
  * @brief 이항계수의 정의를 이용하여 답을 구하는 방식
  * @date 2021-06-23 02:14:53
