@@ -1,80 +1,53 @@
 /**
- * @file 05. stack array.c
+ * @file practice.c
  * @author Kdelphinus (delphinus@khu.ac.kr)
- * @brief 
- * @date 2021-06-25 20:25:22
+ * @brief 모범답안 출처: https://wtg-study.tistory.com/53
+ * @date 2021-06-28 22:45:49
  * 
  * @copyright Copyright (c) 2021
  * 
  */
 #include <stdio.h>
-#include <string.h>
-
-char stack[1000000], anw[1000000];
-
-void stack_array(int sol[], int num)
-{
-    // i: 오름차순 된 숫자리스트(number)의 인덱스
-    // j: 원하는 배열(sol)의 인덱스
-    // k: 스택의 인덱스
-    // l: 명령이 저장된 배열(anw)의 인덱스
-    // number: 숫자가 오름차순으로 저장된 배열
-    // anw: 명령이 저장된 배열
-    // stack: 스택 역할을 할 배열
-    int i = 0, j = 0, k = 0, l = 0, number[num];
-
-    for (int b = 1; b <= num; b++) // 숫자를 오름차순으로 저장
-        number[b - 1] = b;
-
-    while (1)
-    {
-        if ((sol[j] != stack[k - 1] && k - 1 >= 0) || strlen(stack) == 0) // 현재 스택 끝 숫자와 원하는 배열의 숫자가 불일치하거나 스택에 숫자가 없는 경우
-        {
-            if (i == num) // 근데 이미 number를 다 돌았다면
-            {
-                printf("NO"); // 불가능
-                break;
-            }
-            stack[k++] = number[i++]; // 스택에 현재 number의 숫자를 추가
-            anw[l++] = '+';           // push 명령어 추가
-        }
-        else // 만약 현재 스택 끝 숫자와 원하는 배열의 숫자가 일치하면
-        {
-            anw[l++] = '-';  // pop 명령어 추가
-            k--;             // 스택의 인덱스를 하나 줄이고
-            stack[k] = '\0'; // 스택 마지막 숫자를 뺀다
-            j++;             // 원하는 배열의 인덱스를 하나 늘린다
-        }
-
-        if (j == num) // 원하는 배열을 끝까지 다 돌았을 때
-        {
-            if (strlen(stack) == 0) // 스택이 비어있다면
-            {
-                int size;
-                size = strlen(anw);
-                for (int a = 0; a < size; a++) // 명령어를 출력하고
-                    printf("%c\n", anw[a]);
-                break;
-            }
-            else // 남아있다면
-            {
-                printf("NO"); // 불가능하다
-                break;
-            }
-        }
-    }
-}
+#define SIZE 1000000
+int arr[SIZE];
+int stack[SIZE];
+char result[SIZE * 2];
 
 int main()
 {
-    int num;
-    scanf("%d", &num);
+    int n;
+    scanf("%d", &n);
 
-    int sol[num];
-    for (int i = 0; i < num; i++)
-        scanf("%d", &sol[i]);
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
 
-    stack_array(sol, num);
+    int num = 1, top = -1;
+    int idx = 0, result_idx = 0;
+    while (1)
+    {
+        if (top == -1 || stack[top] < arr[idx]) // 스택에 있는 수가 목표수보다 낮은 경우
+        {
+            stack[++top] = num++;       // 스택에 숫자를 집어넣고
+            result[result_idx++] = '+'; // push 로그
+        }
+        else if (stack[top] == arr[idx]) // 스택에 있는 수가 목표수인 경우
+        {
+            top--;                      // 스택에 있는 수를 빼고(인덱스만 옮긴 뒤 나중에 덮어쓰기 식으로)
+            result[result_idx++] = '-'; // pop 로그
+            idx++;                      // 목표수가 들은 배열의 인덱스 이동
+        }
+        else // 스택의 마지막 수가 목표수보다 크면 원하는 수열을 만들 수 없다
+        {
+            printf("NO\n"); // 불가능을 출력하고
+            return 0;       // main함수를 종료
+        }
+
+        if (result_idx == 2 * n)
+            break;
+    }
+
+    for (int i = 0; i < result_idx; i++)
+        printf("%c\n", result[i]);
 
     return 0;
 }
