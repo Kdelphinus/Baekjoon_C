@@ -16,13 +16,39 @@ void D(int flag, char orders[], char numbers[]) // 가장 앞의 숫자를 제거하는 함�
 {
     if (flag) // 리버스 상태일 때
     {
-        end -= 2;               // 뒤에 것을 제거한다(']'와 숫자)
-        numbers[end - 1] = ']'; // ','를 ']'로 바꾼다
+        if (numbers[end - 3] == ',') // 한 자리 숫자일 때
+        {
+            end -= 2;               // 뒤에 것을 제거한다(']'와 숫자)
+            numbers[end - 1] = ']'; // ','를 ']'로 바꾼다
+        }
+        else if (numbers[end - 4] == ',') // 두 자리 숫자일 때
+        {
+            end -= 3;               // 뒤에 것을 제거한다(']'와 숫자)
+            numbers[end - 1] = ']'; // ','를 ']'로 바꾼다
+        }
+        else if (numbers[end - 5] == ',') // 세 자리 숫자일 때
+        {
+            end -= 4;               // 뒤에 것을 제거한다(']'와 숫자)
+            numbers[end - 1] = ']'; // ','를 ']'로 바꾼다
+        }
     }
     else // 리버스 상태가 아닐 때
     {
-        start += 2;           // 앞에 것을 제거한다('['와 숫자)
-        numbers[start] = '['; // ','를 '['로 바꾼다
+        if (numbers[start + 2] == ',') // 한 자리 숫자일 때
+        {
+            start += 2;           // 앞에 것을 제거한다('['와 숫자)
+            numbers[start] = '['; // ','를 '['로 바꾼다
+        }
+        else if (numbers[start + 3] == ',') // 두 자리 숫자일 때
+        {
+            start += 3;           // 앞에 것을 제거한다('['와 숫자)
+            numbers[start] = '['; // ','를 '['로 바꾼다
+        }
+        else if (numbers[start + 4] == ',') // 세 자리 숫자일 때
+        {
+            start += 4;           // 앞에 것을 제거한다('['와 숫자)
+            numbers[start] = '['; // ','를 '['로 바꾼다
+        }
     }
 }
 
@@ -45,20 +71,46 @@ void AC(int n, char orders[], char numbers[])
         }
         else
         {
-            if (end - start < 3) // 길이가 4보다 작으면 숫자가 들어갈 수 없다
+            if (n == 0) // 숫자가 없는데 숫자를 빼려고 하면 에러
             {
                 printf("error\n");
                 return;
             }
             D(flag, orders, numbers);
+            n--;
         }
     }
 
-    if (flag)
+    if (flag) // 거꾸로 출력해야 할 때
     {
-        printf("[");
-        for (int i = end - 2; i > start; i--)
-            printf("%c", numbers[i]);
+        int i = end - 2;  // 괄호는 출력하지 않고 바로 숫자로 인덱스 이동
+        printf("[");      // 여는 괄호 먼저 출력
+        while (i > start) // 괄호가 나오기 전까지만
+        {
+            if (numbers[i] == ',') // 쉼표는 바로 출력
+            {
+                printf("%c", numbers[i]);
+                i--;
+            }
+            else // 숫자일 때(대괄호는 끝나는 숫자를 위하여 조건 추가)
+            {
+                if (numbers[i - 1] == ',' || numbers[i - 1] == '[') // 한 자리일 때
+                {
+                    printf("%c", numbers[i]);
+                    i--;
+                }
+                else if (numbers[i - 2] == ',' || numbers[i - 2] == '[') // 두 자리일 때
+                {
+                    printf("%c%c", numbers[i - 1], numbers[i]);
+                    i -= 2;
+                }
+                else if (numbers[i - 3] == ',' || numbers[i - 3] == '[') // 세 자리 일때
+                {
+                    printf("%c%c%C", numbers[i - 2], numbers[i - 1], numbers[i]);
+                    i -= 3;
+                }
+            }
+        }
         printf("]");
     }
     else
@@ -77,8 +129,8 @@ int main()
     for (int i = 0; i < test; i++)
     {
         int n;
-        char numbers[300000] = {0};
-        char orders[100001] = {0};
+        char numbers[100000000] = {0};
+        char orders[100000000] = {0};
         scanf("%s", orders);
         scanf("%d", &n);
         scanf("%s", numbers);
