@@ -1,141 +1,100 @@
 /**
  * @file 07. AC.c
  * @author Kdelphinus (delphinus@khu.ac.kr)
- * @brief 
- * @date 2021-07-03 21:52:53
+ * @brief 백준 해답 중 하나, 풀이 방식은 동일하나 구현 방식이 간단
+ * @date 2021-07-08 21:44:20
  * 
  * @copyright Copyright (c) 2021
  * 
  */
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
-int start, end; // 주어진 정수 배열의 시작과 끝 인덱스
-
-void D(int flag, char orders[], char numbers[]) // 가장 앞의 숫자를 제거하는 함수
-{
-    if (flag) // 리버스 상태일 때
-    {
-        if (numbers[end - 3] == ',') // 한 자리 숫자일 때
-        {
-            end -= 2;               // 뒤에 것을 제거한다(']'와 숫자)
-            numbers[end - 1] = ']'; // ','를 ']'로 바꾼다
-        }
-        else if (numbers[end - 4] == ',') // 두 자리 숫자일 때
-        {
-            end -= 3;               // 뒤에 것을 제거한다(']'와 숫자)
-            numbers[end - 1] = ']'; // ','를 ']'로 바꾼다
-        }
-        else if (numbers[end - 5] == ',') // 세 자리 숫자일 때
-        {
-            end -= 4;               // 뒤에 것을 제거한다(']'와 숫자)
-            numbers[end - 1] = ']'; // ','를 ']'로 바꾼다
-        }
-    }
-    else // 리버스 상태가 아닐 때
-    {
-        if (numbers[start + 2] == ',') // 한 자리 숫자일 때
-        {
-            start += 2;           // 앞에 것을 제거한다('['와 숫자)
-            numbers[start] = '['; // ','를 '['로 바꾼다
-        }
-        else if (numbers[start + 3] == ',') // 두 자리 숫자일 때
-        {
-            start += 3;           // 앞에 것을 제거한다('['와 숫자)
-            numbers[start] = '['; // ','를 '['로 바꾼다
-        }
-        else if (numbers[start + 4] == ',') // 세 자리 숫자일 때
-        {
-            start += 4;           // 앞에 것을 제거한다('['와 숫자)
-            numbers[start] = '['; // ','를 '['로 바꾼다
-        }
-    }
-}
-
-void AC(int n, char orders[], char numbers[])
-{
-    int size, flag = 0; // 명령의 개수, 리버스 유무(1이 리버스 상태)
-
-    size = strlen(orders); // 명령의 개수
-    start = 0;             // 배열의 시작 인덱스
-    end = strlen(numbers); // 배열의 끝 인덱스
-
-    for (int i = 0; i < size; i++)
-    {
-        if (orders[i] == 'R') // 명령이 리버스이면
-        {
-            if (flag)
-                flag = 0;
-            else
-                flag = 1;
-        }
-        else
-        {
-            if (n == 0) // 숫자가 없는데 숫자를 빼려고 하면 에러
-            {
-                printf("error\n");
-                return;
-            }
-            D(flag, orders, numbers);
-            n--;
-        }
-    }
-
-    if (flag) // 거꾸로 출력해야 할 때
-    {
-        int i = end - 2;  // 괄호는 출력하지 않고 바로 숫자로 인덱스 이동
-        printf("[");      // 여는 괄호 먼저 출력
-        while (i > start) // 괄호가 나오기 전까지만
-        {
-            if (numbers[i] == ',') // 쉼표는 바로 출력
-            {
-                printf("%c", numbers[i]);
-                i--;
-            }
-            else // 숫자일 때(대괄호는 끝나는 숫자를 위하여 조건 추가)
-            {
-                if (numbers[i - 1] == ',' || numbers[i - 1] == '[') // 한 자리일 때
-                {
-                    printf("%c", numbers[i]);
-                    i--;
-                }
-                else if (numbers[i - 2] == ',' || numbers[i - 2] == '[') // 두 자리일 때
-                {
-                    printf("%c%c", numbers[i - 1], numbers[i]);
-                    i -= 2;
-                }
-                else if (numbers[i - 3] == ',' || numbers[i - 3] == '[') // 세 자리 일때
-                {
-                    printf("%c%c%C", numbers[i - 2], numbers[i - 1], numbers[i]);
-                    i -= 3;
-                }
-            }
-        }
-        printf("]");
-    }
-    else
-    {
-        for (int i = start; i < end; i++)
-            printf("%c", numbers[i]);
-    }
-    printf("\n");
-}
+char p[100001], x[1000001]; // p: 명령들, x: 배열
 
 int main()
 {
-    int test;
-    scanf("%d", &test);
+    /** 
+    T: 테스트 횟수
+    t: 배열이 뒤집혔는지 확인하는 변수
+    n: 배열에 들어있는 수의 개수
+    i: 배열의 시작 인덱스
+    j: 배열의 끝 인덱스
+    error: error가 뜨는지 판별할 변수
+    **/
+    int T, t, n, i, j, error;
 
-    for (int i = 0; i < test; i++)
+    scanf("%d", &T);
+
+    while (T--)
     {
-        int n;
-        char numbers[100000000] = {0};
-        char orders[100000000] = {0};
-        scanf("%s", orders);
-        scanf("%d", &n);
-        scanf("%s", numbers);
+        error = 0; // 현재는 error이 아니다
 
-        AC(n, orders, numbers);
+        scanf("%s %d %s", p, &n, x);
+
+        i = 1;             // 배열의 시작 인덱스(괄호를 제외하고)
+        j = strlen(x) - 2; // 배열의 끝 인덱스(괄호를 제외하고)
+        t = 0;             // R명령이 짝수번 있음
+
+        for (int k = 0; p[k]; k++)
+        {
+            if (p[k] == 'R')     // R명령이면
+                t = (t + 1) % 2; // 배열이 뒤집혔는지 최신화
+            else                 // D명령이면
+            {
+                if (n == 0) // 배열 안에 숫자가 없다면
+                {
+                    error = 1; // error
+                    break;     // 명령 종료
+                }
+
+                if (t) // 배열이 뒤집힌 상태면
+                {
+                    while (x[j] != ',' && x[j] != '[') // ','나 '['이 나오기 전까지 끝 인덱스를 앞으로 당긴다
+                        j--;
+
+                    j--; // 숫자가 마지막이 되도록 한 번 더 뺸다
+                }
+                else // 배열이 뒤집히지 않은 상태면
+                {
+                    while (x[i] != ',' && x[i] != ']') // ','나 ']'이 나오기 전까지 시작 인덱스를 뒤로 민다
+                        i++;
+
+                    i++; // 숫자가 처음이 되도록 한 번 더 민다
+                }
+                n--; // 숫자를 하나 빼준다
+            }
+        }
+
+        if (error) // error가 발생했을 때
+            printf("error\n");
+        else // error가 발생하지 않았을 때
+        {
+            printf("["); // 여는 괄호
+
+            if (t) // 배열이 뒤집힌 상태면
+            {
+                for (int k = j; k >= i; k--) // 뒤에서부터 출력한다
+                {
+                    if (x[k - 1] == '[' || x[k - 1] == ',') // '['나 ',' 전에
+                    {
+                        printf("%d", atoi(&x[k])); // 문자열을 정수형으로 변환
+
+                        if (k > i) // 뒤에 숫자가 더 있다면
+                            printf(",");
+                    }
+                }
+            }
+            else // 배열이 원 상태이면
+            {
+                for (int k = i; k <= j; k++) // 차례대로 출력
+                    printf("%c", x[k]);
+            }
+
+            printf("]\n"); // 닫는 괄호
+        }
     }
+
     return 0;
 }
