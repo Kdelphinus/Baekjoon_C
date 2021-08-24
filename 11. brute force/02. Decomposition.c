@@ -1,42 +1,36 @@
+/**
+ * @file 02. Decomposition.c
+ * @author Kdelphinus (delphinus@khu.ac.kr)
+ * @brief 재채점 결과 오답으로 나와 수정
+ * @date 2021-08-24 11:53:55
+ * 
+ * @copyright Copyright (c) 2021
+ * 
+ */
 #include <stdio.h>
+
+int decomp(int n)
+{
+    for (int i = 1; i < n; i++)
+    {
+        int tmp = i, value = i;
+        while (tmp > 0)
+        {
+            value += tmp % 10;
+            tmp /= 10;
+        }
+
+        if (value == n)
+            return i;
+    }
+
+    return 0;
+}
 
 int main()
 {
     int num, i = 10, i_copy, temp;
     scanf("%d", &num);
-
-    if (num < 10)
-    {
-        printf("%d", 0);
-    }
-    else
-    {
-        while (1)
-        {
-            temp = i;
-            i_copy = i;
-            while (temp > 0)
-            {
-                i_copy += temp % 10;
-                temp /= 10;
-            }
-
-            if (i_copy == num)
-            {
-                printf("%d", i);
-                break;
-            }
-            else
-            {
-                i++;
-                if (i == num)
-                {
-                    printf("%d", 0);
-                    break;
-                }
-            }
-        }
-    }
-
+    printf("%d", decomp(num));
     return 0;
 }
