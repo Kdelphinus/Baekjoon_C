@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# 내가 추가한 것
+/코딩하는거니
+/nado_coding
+/.vscode
+.gitattributes
+practice.c
