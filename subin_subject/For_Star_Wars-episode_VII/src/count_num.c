@@ -6,35 +6,47 @@
 /*   By: myko <myko@student.42seoul.kr>             +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/14 05:27:11 by myko              #+#    #+#             */
-/*   Updated: 2023/01/14 05:27:12 by myko             ###   ########.fr       */
+/*   Updated: 2023/01/14 06:16:46 by myko             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+// 백준 1019 책 페이지와 같은 문제
 #include "star_wars.h"
 
 void	count_num(int *num, int n)
 {
+	int i = 1;
 	int	r, tmp;
 
-	while (n % 9 != 0)
+	while (n)
 	{
-		tmp = n;
-		while (tmp)
+		// n의 일의 자리가 9가 될 때까지 직접 숫자를 세주며 줄여간다.
+		// 파이썬과 음수 나누기가 달라서 n이 0일 때 빼줘야 하는 듯 하다.
+		while (n && n % 10 != 9)
 		{
-			num[tmp % 10]++;
-			tmp /= 10;
+			tmp = n;
+			while (tmp)
+			{
+				num[tmp % 10] += i;
+				tmp /= 10;
+			}
+			n--;
 		}
-		n--;
-	}
-	for (int i = 1; n > 0; i *= 10)
-	{
-		r = n % 10;
+		// 10보다 작으면 직접 세주고 종료한다.
+		if (n < 10)
+		{
+			for (int j = 0; j < n + 1; j++)
+				num[j] += i;
+			num[0] -= i;
+			break ;
+		}
 		n /= 10;
-		for (int j = 0; j < r + 1; j++)
+		// 일의 자리가 9일 땐, 모든 숫자를 '현재 숫자를 10으로 나눈 몫 + 1' x 자릿수 만큼 가지고 있다.
+		for (int j = 0; j < 10; j++)
 			num[j] += (n + 1) * i;
-		for (int j = r + 1; j < 10; j++)
-			num[j] += n * i;
+		// 0은 자릿수만큼 계속 더해지기에 자릿수만큼 다시 빼준다.
 		num[0] -= i;
+		i *= 10;
 	}
 	for (int i = 0; i < 10; i++)
 		printf("%d ", num[i]);
